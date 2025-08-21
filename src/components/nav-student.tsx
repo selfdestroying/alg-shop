@@ -8,9 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronsUpDown, Sparkles } from 'lucide-react';
+import { Box, Boxes, ChevronsUpDown, LogOut, Package, PackageCheck, Sparkles, User } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
 export async function NavStudent() {
   const student = await getStudent();
@@ -35,11 +36,26 @@ export async function NavStudent() {
           <ChevronsUpDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={4}>
+      <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width)"
+            side="top"
+            align="start">
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Sparkles />
-            Upgrade to Pro
+          
+        <DropdownMenuItem asChild>
+              <Link href={'/shop/profile'}>
+                <User />
+                Профиль
+              </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+              <Link href={'/shop/orders'}>
+                <Package />
+                Мои заказы
+              </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={onLogout}>
+                <LogOut />
+                Выйти
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

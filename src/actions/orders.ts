@@ -3,6 +3,14 @@ import prisma from '@/lib/prisma'
 import {Prisma} from '@prisma/client'
 import { clearCart } from './cart'
 import { revalidatePath } from 'next/cache'
+
+export const getOrders = async (data: Prisma.OrderFindManyArgs) => {
+    const orders = await prisma.order.findMany({...data, include: {product: true}})
+
+    return orders
+
+}
+
 export const createOrder = async (data: Prisma.OrderUncheckedCreateInput[], totalPrice: number) => {
 
     const studentId = data[0].studentId

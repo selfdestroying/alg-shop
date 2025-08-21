@@ -132,6 +132,7 @@ model Product {
   popular       Boolean    @default(false)
   cartItems     CartItem[]
   category      Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  orders        Order[]
 }
 
 model Category {
@@ -163,18 +164,17 @@ model CartItem {
 model Order {
   id        Int @id @default(autoincrement())
   productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   studentId Int
   status    OrderStatus @default(PENDING)
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
-
-  @@unique([studentId, productId])
 }
 
 enum OrderStatus {
   COMPLETED
   PENDING
-  CANCELED
+  CANCELLED
 }
 
 enum AttendanceStatus {
