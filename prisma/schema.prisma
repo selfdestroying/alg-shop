@@ -92,7 +92,8 @@ model Student {
   createdAt    DateTime       @default(now())
   coins        Int            @default(0)
   Attendance   Attendance[]
-  cart         Cart?
+  Cart         Cart?
+  Orders       Order[]
   Payment      Payment[]
   StudentGroup StudentGroup[]
 }
@@ -123,6 +124,7 @@ model Product {
   description   String?
   price         Float
   originalPrice Float?
+  quantity      Int
   image         String     @default("placeholder.svg")
   categoryId    Int
   rating        Float      @default(0)
@@ -156,6 +158,23 @@ model CartItem {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId])
+}
+
+model Order {
+  id        Int @id @default(autoincrement())
+  productId Int
+  studentId Int
+  status    OrderStatus @default(PENDING)
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, productId])
+}
+
+enum OrderStatus {
+  COMPLETED
+  PENDING
+  CANCELED
 }
 
 enum AttendanceStatus {

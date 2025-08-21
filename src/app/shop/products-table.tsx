@@ -91,7 +91,7 @@ export default function ProductsTable({
       cartId: cart!.id,
       productId: productId,
       quantity: 1,
-    });
+    }, 'decrement');
   };
 
   const filteredProducts = getFilteredProducts();
@@ -148,6 +148,11 @@ export default function ProductsTable({
             {product.rating} ({product.reviews})
           </span>
         </div>
+        <div className="mb-3 flex flex-wrap gap-1">
+          <Badge variant="secondary" className="text-xs">
+            Осталось: {product.quantity}
+          </Badge>
+        </div>
 
         <div className="flex items-center gap-2">
           <div className="text-xl font-bold flex items-center space-x-1">
@@ -169,7 +174,7 @@ export default function ProductsTable({
           onClick={() => handleAddToCart(product.id)}
           disabled={Boolean(
             cart?.items.find((item) => item.productId == product.id),
-          )}
+          ) || product.quantity <= 0}
         >
           <ShoppingCart className="mr-2 h-4 w-4" />
           Add to Cart

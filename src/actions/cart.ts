@@ -25,6 +25,7 @@ export const getCart = async () => {
 
 export const addOrUpdateProductInCart = async (
   data: Prisma.CartItemUncheckedCreateInput,
+  operation: 'increment' | 'decrement'
 ) => {
   await prisma.cartItem.upsert({
     where: {
@@ -34,11 +35,25 @@ export const addOrUpdateProductInCart = async (
     update: { ...data },
   });
 
+  await prisma.product.update({
+    where: {
+      id: data.productId
+    },
+    data: {
+      quantity: operation == 'increment' ? { increment: 1 } : { decrement: 1 }
+    }
+  })
+
   revalidatePath('/shop');
 };
 
 export const removeFromCart = async (id: number) => {
-  await prisma.cartItem.delete({ where: { id } });
-
+  const { productId } = await prisma.cartItem.delete({ where: { id } });
+  await prisma.product.update({ where: { id: productId }, data: { quantity: { increment: 1 } } })
   revalidatePath('/shop/cart');
 };
+
+
+export const clearCart = async (studentId: number) => {
+  await prisma.cartItem.deleteMany({where: {cart: {studentId}}})
+}

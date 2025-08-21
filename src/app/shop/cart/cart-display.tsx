@@ -1,6 +1,7 @@
 'use client';
 
 import { addOrUpdateProductInCart, removeFromCart } from '@/actions/cart';
+import { createOrder } from '@/actions/orders';
 import { StudentData } from '@/actions/students';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,19 +41,27 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
     );
   };
 
-  const handleUpdateQuantity = (item: CartItem, quantity: number) => {
+  const handleUpdateQuantity = (item: CartItem, quantity: number, operation: 'increment' | 'decrement') => {
     startTransition(() => {
       addOrUpdateProductInCart({
         cartId: item.cartId,
         productId: item.productId,
         quantity,
-      });
+      }, operation);
     });
   };
 
   const handleRemoveFromCart = (id: number) => {
     const ok = removeFromCart(id);
   };
+
+  const handleCreateOrder = () => {
+    const totalPrice = cart.items.reduce(
+      (prev, item) => prev + item.product.price,
+      0,
+    )
+    const ok = createOrder(cart.items.map((item) => ({productId: item.productId, studentId: student.id})), totalPrice)
+  }
 
   if (cart.items.length === 0) {
     return (
@@ -103,21 +112,18 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
                   Товары в корзине
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className='space-y-2'>
                 {cart.items.map((item, index) => (
-                  <div className="flex flex-col sm:flex-row gap-4" key={index}>
-                    <div className="relative w-full h-32 sm:w-20 sm:h-20 flex-shrink-0">
-                      <Image
+                  <div key={index} className='grid grid-cols-1 sm:grid-cols-[max-content_1fr] gap-2'>
+                    <Image
                         src={`/uploads/${item.product.image || 'placeholder.svg'}`}
                         alt={item.product.name}
                         width={80}
                         height={80}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="object-cover rounded-lg"
                       />
-                    </div>
-                    <div className="flex-1 min-w-0 space-y-3 sm:space-y-2">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                        <div className="space-y-1">
+                      <div className='grid grid-cols-1 sm:grid-cols-2'>
+                        <div>
                           <h3 className="font-semibold text-base sm:text-lg line-clamp-2">
                             {item.product.name}
                           </h3>
@@ -125,85 +131,22 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
                             {item.product.category.name}
                           </Badge>
                         </div>
-                        <div className="text-left sm:text-right flex flex-col items-end">
-                          <div className="font-bold text-lg">
-                            {formatPrice(item.product.price)}
-                          </div>
-                          {item.quantity > 1 && (
-                            <div className="text-sm font-medium flex gap-2">
-                              Подсумма:{' '}
-                              {formatPrice(item.product.price * item.quantity)}
+                        <div className="text-left sm:text-right flex justify-between sm:grid sm:grid-cols-1">
+                            <div className="font-bold text-lg flex items-center justify-between sm:justify-end">
+                              {formatPrice(item.product.price)}
                             </div>
-                          )}
+                            <div className="flex items-center justify-between sm:justify-end gap-4">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleRemoveFromCart(item.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                        </div>
                         </div>
                       </div>
-
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                          <Label
-                            htmlFor={`quantity-${item.id}`}
-                            className="text-sm font-medium whitespace-nowrap"
-                          >
-                            Количество:
-                          </Label>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="w-8 h-8 bg-transparent"
-                              onClick={() =>
-                                handleUpdateQuantity(item, item.quantity - 1)
-                              }
-                              disabled={isPending || item.quantity == 1}
-                            >
-                              {isPending ? (
-                                <Loader2 className="animate-spin" />
-                              ) : (
-                                <Minus className="w-3 h-3" />
-                              )}
-                            </Button>
-                            <Input
-                              id={`quantity-${item.id}`}
-                              type="number"
-                              min={1}
-                              value={item.quantity}
-                              className="w-16 text-center"
-                              readOnly
-                            />
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="w-8 h-8 bg-transparent"
-                              onClick={() =>
-                                handleUpdateQuantity(item, item.quantity + 1)
-                              }
-                              disabled={isPending}
-                            >
-                              {isPending ? (
-                                <Loader2 className="animate-spin" />
-                              ) : (
-                                <Plus className="w-3 h-3" />
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between sm:justify-end gap-4">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-destructive hover:text-destructive"
-                            onClick={() => handleRemoveFromCart(item.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {index < cart.items.length - 1 && (
-                      <Separator className="mt-4" />
-                    )}
                   </div>
                 ))}
               </CardContent>
@@ -226,9 +169,16 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
               </div>
             </div>
 
-            <Button size="lg" className="w-full gap-2">
+            <Button size="lg" className="w-full gap-2" disabled={cart.items.reduce(
+                      (prev, item) => prev + item.product.price * item.quantity,
+                      0,
+                    ) > student.coins || isPending} onClick={() => startTransition(handleCreateOrder)}>
+              {isPending ? <Loader2 className='animate-spin'/> :
+              <> 
               <CreditCard className="w-4 h-4" />
               Заказать
+              </>
+              }
             </Button>
           </div>
         </div>
@@ -247,9 +197,16 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
                 )}
               </div>
             </div>
-            <Button size="lg" className="gap-2 flex-1 max-w-xs">
+            <Button size="lg" className="gap-2 flex-1 max-w-xs" disabled={cart.items.reduce(
+                      (prev, item) => prev + item.product.price * item.quantity,
+                      0,
+                    ) > student.coins || isPending} onClick={() => startTransition(handleCreateOrder)}>
+              {isPending ? <Loader2 className='animate-spin'/> :
+              <> 
               <CreditCard className="w-4 h-4" />
               Заказать
+              </>
+              }
             </Button>
           </div>
         </div>

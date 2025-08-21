@@ -36,8 +36,8 @@ async function main() {
       name: 'Смартфон X',
       description:
         'Мощный смартфон с отличной камерой и долгим временем работы батареи.',
-      price: 699.99,
-      originalPrice: 799.99,
+      price: 50,
+      quantity: 0,
       image: 'https://example.com/smartphone_x.jpg',
       rating: 4.8,
       reviews: 1250,
@@ -48,7 +48,8 @@ async function main() {
       name: 'Ноутбук Pro 15',
       description:
         'Высокопроизводительный ноутбук для профессионалов, легкий и мощный.',
-      price: 1299.0,
+      price: 30,
+      quantity: 1,
       image: 'https://example.com/laptop_pro15.jpg',
       rating: 4.5,
       reviews: 890,
@@ -59,7 +60,8 @@ async function main() {
       name: 'Наушники SoundFlow',
       description:
         'Беспроводные наушники с шумоподавлением и превосходным качеством звука.',
-      price: 149.99,
+      price: 15,
+      quantity: 3,
       image: 'https://example.com/headphones_soundflow.jpg',
       rating: 4.7,
       reviews: 2300,
@@ -70,8 +72,8 @@ async function main() {
       name: 'Умные часы FitTrack',
       description:
         'Отслеживайте свою активность, сон и сердечный ритм с помощью этих стильных часов.',
-      price: 199.5,
-      originalPrice: 249.99,
+      price: 10,
+      quantity: 1,
       image: 'https://example.com/smartwatch_fittrack.jpg',
       rating: 4.2,
       reviews: 750,
@@ -82,7 +84,8 @@ async function main() {
       name: 'Кофемашина LattePro',
       description:
         'Автоматическая кофемашина для приготовления идеального латте и капучино.',
-      price: 349.0,
+      price: 25,
+      quantity: 4,
       image: 'https://example.com/coffeemachine_lattepro.jpg',
       rating: 4.9,
       reviews: 500,
@@ -92,7 +95,8 @@ async function main() {
     {
       name: 'Книга "Приключения"',
       description: 'Увлекательная история о путешествиях и открытиях.',
-      price: 25.0,
+      price: 5,
+      quantity: 10,
       image: 'https://example.com/book_adventure.jpg',
       rating: 4.0,
       reviews: 120,
