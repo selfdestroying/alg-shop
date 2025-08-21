@@ -1,0 +1,12 @@
+// .eslintrc.json
+{
+  "extends": [
+    "next/core-web-vitals", // Default Next.js configuration
+    "plugin:prettier/recommended" // Integrates Prettier
+  ],
+  "rules": {
+    // You can add custom ESLint rules here
+    // For example, to enforce single quotes:
+    // "quotes": ["error", "single"]
+  }
+}
