@@ -87,11 +87,14 @@ export default function ProductsTable({
   };
 
   const handleAddToCart = (productId: number) => {
-    addOrUpdateProductInCart({
-      cartId: cart!.id,
-      productId: productId,
-      quantity: 1,
-    }, 'decrement');
+    addOrUpdateProductInCart(
+      {
+        cartId: cart!.id,
+        productId: productId,
+        quantity: 1,
+      },
+      'decrement',
+    );
   };
 
   const filteredProducts = getFilteredProducts();
@@ -172,9 +175,10 @@ export default function ProductsTable({
           className="w-full"
           size="sm"
           onClick={() => handleAddToCart(product.id)}
-          disabled={Boolean(
-            cart?.items.find((item) => item.productId == product.id),
-          ) || product.quantity <= 0}
+          disabled={
+            Boolean(cart?.items.find((item) => item.productId == product.id)) ||
+            product.quantity <= 0
+          }
         >
           <ShoppingCart className="mr-2 h-4 w-4" />
           Add to Cart
@@ -189,7 +193,7 @@ export default function ProductsTable({
         <div className="flex gap-4">
           <div className="relative h-24 w-24 flex-shrink-0">
             <Image
-              src={product.image || '/placeholder.svg'}
+              src={`/uploads/${product.image || 'placeholder.svg'}`}  
               alt={product.name}
               width={96}
               height={96}
