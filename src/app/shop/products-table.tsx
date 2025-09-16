@@ -193,7 +193,7 @@ export default function ProductsTable({
         <div className="flex gap-4">
           <div className="relative h-24 w-24 flex-shrink-0">
             <Image
-              src={`/uploads/${product.image || 'placeholder.svg'}`}  
+              src={`/uploads/${product.image || 'placeholder.svg'}`}
               alt={product.name}
               width={96}
               height={96}
@@ -279,14 +279,14 @@ export default function ProductsTable({
           <div className="relative flex-1 sm:w-80">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input
-              placeholder="Search products..."
+              placeholder="Искать товары..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
           <p className="text-muted-foreground text-sm whitespace-nowrap">
-            {filteredProducts.length} products
+            {filteredProducts.length} товаров
           </p>
         </div>
 
@@ -315,11 +315,11 @@ export default function ProductsTable({
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="popular">Most Popular</SelectItem>
-              <SelectItem value="rating">Highest Rated</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="name">Name A-Z</SelectItem>
+              <SelectItem value="popular">Популярные</SelectItem>
+              <SelectItem value="rating">С высокой оценкой</SelectItem>
+              <SelectItem value="price-low">Сначала дешевые</SelectItem>
+              <SelectItem value="price-high">Сначала дорогие</SelectItem>
+              <SelectItem value="name">По алфавиту</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -346,9 +346,9 @@ export default function ProductsTable({
       {filteredProducts.length === 0 && (
         <div className="py-12 text-center">
           <div className="mb-4 text-4xl">🔍</div>
-          <h3 className="mb-2 text-xl font-semibold">No products found</h3>
+          <h3 className="mb-2 text-xl font-semibold">Товары не найдены</h3>
           <p className="text-muted-foreground mb-4">
-            Try searching for something else or browse all categories
+            Попробуйте найти что то другое
           </p>
           <Button
             onClick={() => {
@@ -357,7 +357,7 @@ export default function ProductsTable({
             }}
             variant="outline"
           >
-            Show All Products
+            Показать все
           </Button>
         </div>
       )}
