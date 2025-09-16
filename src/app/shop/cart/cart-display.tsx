@@ -29,7 +29,13 @@ type CartWithItems = Prisma.CartGetPayload<{
   include: { items: { include: { product: { include: { category: true } } } } };
 }>;
 
-export default function CartDisplay({ cart, student }: { cart: CartWithItems, student: StudentData }) {
+export default function CartDisplay({
+  cart,
+  student,
+}: {
+  cart: CartWithItems;
+  student: StudentData;
+}) {
   const [isPending, startTransition] = useTransition();
 
   const formatPrice = (price: number) => {
@@ -41,13 +47,20 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
     );
   };
 
-  const handleUpdateQuantity = (item: CartItem, quantity: number, operation: 'increment' | 'decrement') => {
+  const handleUpdateQuantity = (
+    item: CartItem,
+    quantity: number,
+    operation: 'increment' | 'decrement',
+  ) => {
     startTransition(() => {
-      addOrUpdateProductInCart({
-        cartId: item.cartId,
-        productId: item.productId,
-        quantity,
-      }, operation);
+      addOrUpdateProductInCart(
+        {
+          cartId: item.cartId,
+          productId: item.productId,
+          quantity,
+        },
+        operation,
+      );
     });
   };
 
@@ -59,9 +72,15 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
     const totalPrice = cart.items.reduce(
       (prev, item) => prev + item.product.price,
       0,
-    )
-    const ok = createOrder(cart.items.map((item) => ({productId: item.productId, studentId: student.id})), totalPrice)
-  }
+    );
+    const ok = createOrder(
+      cart.items.map((item) => ({
+        productId: item.productId,
+        studentId: student.id,
+      })),
+      totalPrice,
+    );
+  };
 
   if (cart.items.length === 0) {
     return (
@@ -112,41 +131,44 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
                   Товары в корзине
                 </CardTitle>
               </CardHeader>
-              <CardContent className='space-y-2'>
+              <CardContent className="space-y-2">
                 {cart.items.map((item, index) => (
-                  <div key={index} className='grid grid-cols-1 sm:grid-cols-[max-content_1fr] gap-2'>
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 sm:grid-cols-[max-content_1fr] gap-2"
+                  >
                     <Image
-                        src={`/uploads/${item.product.image || 'placeholder.svg'}`}
-                        alt={item.product.name}
-                        width={80}
-                        height={80}
-                        className="object-cover rounded-lg"
-                      />
-                      <div className='grid grid-cols-1 sm:grid-cols-2'>
-                        <div>
-                          <h3 className="font-semibold text-base sm:text-lg line-clamp-2">
-                            {item.product.name}
-                          </h3>
-                          <Badge variant="secondary" className="text-xs w-fit">
-                            {item.product.category.name}
-                          </Badge>
+                      src={`/uploads/${item.product.image || 'placeholder.svg'}`}
+                      alt={item.product.name}
+                      width={80}
+                      height={80}
+                      className="object-cover rounded-lg"
+                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2">
+                      <div>
+                        <h3 className="font-semibold text-base sm:text-lg line-clamp-2">
+                          {item.product.name}
+                        </h3>
+                        <Badge variant="secondary" className="text-xs w-fit">
+                          {item.product.category.name}
+                        </Badge>
+                      </div>
+                      <div className="text-left sm:text-right flex justify-between sm:grid sm:grid-cols-1">
+                        <div className="font-bold text-lg flex items-center justify-between sm:justify-end">
+                          {formatPrice(item.product.price)}
                         </div>
-                        <div className="text-left sm:text-right flex justify-between sm:grid sm:grid-cols-1">
-                            <div className="font-bold text-lg flex items-center justify-between sm:justify-end">
-                              {formatPrice(item.product.price)}
-                            </div>
-                            <div className="flex items-center justify-between sm:justify-end gap-4">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-destructive hover:text-destructive"
-                              onClick={() => handleRemoveFromCart(item.id)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                        </div>
+                        <div className="flex items-center justify-between sm:justify-end gap-4">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => handleRemoveFromCart(item.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
+                    </div>
                   </div>
                 ))}
               </CardContent>
@@ -169,16 +191,25 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
               </div>
             </div>
 
-            <Button size="lg" className="w-full gap-2" disabled={cart.items.reduce(
-                      (prev, item) => prev + item.product.price * item.quantity,
-                      0,
-                    ) > student.coins || isPending} onClick={() => startTransition(handleCreateOrder)}>
-              {isPending ? <Loader2 className='animate-spin'/> :
-              <> 
-              <CreditCard className="w-4 h-4" />
-              Заказать
-              </>
+            <Button
+              size="lg"
+              className="w-full gap-2"
+              disabled={
+                cart.items.reduce(
+                  (prev, item) => prev + item.product.price * item.quantity,
+                  0,
+                ) > student.coins || isPending
               }
+              onClick={() => startTransition(handleCreateOrder)}
+            >
+              {isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <>
+                  <CreditCard className="w-4 h-4" />
+                  Заказать
+                </>
+              )}
             </Button>
           </div>
         </div>
@@ -197,16 +228,25 @@ export default function CartDisplay({ cart, student }: { cart: CartWithItems, st
                 )}
               </div>
             </div>
-            <Button size="lg" className="gap-2 flex-1 max-w-xs" disabled={cart.items.reduce(
-                      (prev, item) => prev + item.product.price * item.quantity,
-                      0,
-                    ) > student.coins || isPending} onClick={() => startTransition(handleCreateOrder)}>
-              {isPending ? <Loader2 className='animate-spin'/> :
-              <> 
-              <CreditCard className="w-4 h-4" />
-              Заказать
-              </>
+            <Button
+              size="lg"
+              className="gap-2 flex-1 max-w-xs"
+              disabled={
+                cart.items.reduce(
+                  (prev, item) => prev + item.product.price * item.quantity,
+                  0,
+                ) > student.coins || isPending
               }
+              onClick={() => startTransition(handleCreateOrder)}
+            >
+              {isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <>
+                  <CreditCard className="w-4 h-4" />
+                  Заказать
+                </>
+              )}
             </Button>
           </div>
         </div>

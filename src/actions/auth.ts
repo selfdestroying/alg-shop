@@ -4,6 +4,7 @@ import { signInFormSchema } from '@/schemas/auth';
 import { redirect } from 'next/navigation';
 import { createSession, deleteSession } from '../lib/session';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function sigin(
   state: any | undefined,
   formData: FormData,

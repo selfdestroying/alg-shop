@@ -1,24 +1,30 @@
-'use server'
-import prisma from '@/lib/prisma'
-import {Prisma} from '@prisma/client'
-import { clearCart } from './cart'
-import { revalidatePath } from 'next/cache'
+'use server';
+import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import { clearCart } from './cart';
+import { revalidatePath } from 'next/cache';
 
 export const getOrders = async (data: Prisma.OrderFindManyArgs) => {
-    const orders = await prisma.order.findMany({...data, include: {product: true}})
+  const orders = await prisma.order.findMany({
+    ...data,
+    include: { product: true },
+  });
 
-    return orders
+  return orders;
+};
 
-}
+export const createOrder = async (
+  data: Prisma.OrderUncheckedCreateInput[],
+  totalPrice: number,
+) => {
+  const studentId = data[0].studentId;
 
-export const createOrder = async (data: Prisma.OrderUncheckedCreateInput[], totalPrice: number) => {
+  await prisma.order.createMany({ data });
+  await prisma.student.update({
+    where: { id: data[0].studentId },
+    data: { coins: { decrement: totalPrice } },
+  });
+  await clearCart(studentId);
 
-    const studentId = data[0].studentId
-    
-
-    await prisma.order.createMany({data})
-    await prisma.student.update({where: {id: data[0].studentId}, data: {coins: {decrement: totalPrice}}})
-    await clearCart(studentId)
-
-    revalidatePath('/shop/cart')
-}
+  revalidatePath('/shop/cart');
+};

@@ -8,7 +8,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Box, Boxes, ChevronsUpDown, LogOut, Package, PackageCheck, Sparkles, User } from 'lucide-react';
+import {
+  Box,
+  Boxes,
+  ChevronsUpDown,
+  LogOut,
+  Package,
+  PackageCheck,
+  Sparkles,
+  User,
+} from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { Button } from './ui/button';
 import Link from 'next/link';
@@ -36,26 +45,27 @@ export async function NavStudent() {
           <ChevronsUpDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width)"
-            side="top"
-            align="start">
+      <DropdownMenuContent
+        className="w-(--radix-dropdown-menu-trigger-width)"
+        side="top"
+        align="start"
+      >
         <DropdownMenuGroup>
-          
-        <DropdownMenuItem asChild>
-              <Link href={'/shop/profile'}>
-                <User />
-                Профиль
-              </Link>
+          <DropdownMenuItem asChild>
+            <Link href={'/shop/profile'}>
+              <User />
+              Профиль
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-              <Link href={'/shop/orders'}>
-                <Package />
-                Мои заказы
-              </Link>
+            <Link href={'/shop/orders'}>
+              <Package />
+              Мои заказы
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onLogout}>
-                <LogOut />
-                Выйти
+            <LogOut />
+            Выйти
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
