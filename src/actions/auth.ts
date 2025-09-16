@@ -4,11 +4,10 @@ import { signInFormSchema } from '@/schemas/auth';
 import { redirect } from 'next/navigation';
 import { createSession, deleteSession } from '../lib/session';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function sigin(
-  state: any | undefined,
+  state: { success: boolean; message: string } | undefined,
   formData: FormData,
-): Promise<any | undefined> {
+): Promise<{ success: boolean; message: string } | undefined> {
   const validatedFields = signInFormSchema.safeParse({
     login: formData.get('login'),
     password: formData.get('password'),
