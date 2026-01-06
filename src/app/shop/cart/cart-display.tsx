@@ -6,17 +6,12 @@ import { StudentData } from '@/actions/students';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { CartItem, Prisma } from '@prisma/client';
 import {
   ArrowLeft,
   Coins,
   CreditCard,
   Loader2,
-  Minus,
-  Plus,
   ShoppingBag,
   ShoppingCart,
   Trash2,
@@ -138,7 +133,7 @@ export default function CartDisplay({
                     className="grid grid-cols-1 sm:grid-cols-[max-content_1fr] gap-2"
                   >
                     <Image
-                      src={`/uploads/${item.product.image || 'placeholder.svg'}`}
+                      src={item.product.image || 'placeholder.svg'}
                       alt={item.product.name}
                       width={80}
                       height={80}

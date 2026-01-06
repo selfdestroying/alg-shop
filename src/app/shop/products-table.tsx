@@ -104,7 +104,7 @@ export default function ProductsTable({
       <CardHeader className="p-0">
         <div className="relative overflow-hidden rounded-t-lg">
           <Image
-            src={`/uploads/${product.image || 'placeholder.svg'}`}
+            src={product.image || 'placeholder.svg'}
             alt={product.name}
             width={300}
             height={200}
@@ -193,7 +193,7 @@ export default function ProductsTable({
         <div className="flex gap-4">
           <div className="relative h-24 w-24 flex-shrink-0">
             <Image
-              src={`/uploads/${product.image || 'placeholder.svg'}`}
+              src={product.image || 'placeholder.svg'}
               alt={product.name}
               width={96}
               height={96}

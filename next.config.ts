@@ -1,15 +1,14 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
+  images: {
+    remotePatterns: [
       {
-        source: '/uploads/:path*',
-        destination: 'http://localhost:3000/uploads/:path*',
+        protocol: 'http',
+        hostname: 'images.alg.tw1.ru',
       },
-    ];
+    ],
   },
-  /* config options here */
 };
 
 export default nextConfig;
