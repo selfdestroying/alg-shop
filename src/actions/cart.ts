@@ -6,15 +6,15 @@ import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export const getCart = async () => {
-  const { isAuth, studentId } = await verifySession();
-  if (!isAuth || studentId === null) {
+  const { isAuth, studentId, organizationId } = await verifySession();
+  if (!isAuth || studentId === null || organizationId === null) {
     return null;
   }
 
   let cart;
 
   cart = await prisma.cart.findFirst({
-    where: { studentId },
+    where: { studentId, organizationId },
     include: {
       items: {
         include: { product: { include: { category: true } } },
@@ -28,6 +28,7 @@ export const getCart = async () => {
     cart = await prisma.cart.create({
       data: {
         studentId,
+        organizationId,
       },
       include: {
         items: {
@@ -74,6 +75,14 @@ export const removeFromCart = async (id: number) => {
   revalidatePath('/shop/cart');
 };
 
-export const clearCart = async (studentId: number) => {
-  await prisma.cartItem.deleteMany({ where: { cart: { studentId } } });
+export const clearCart = async (studentId: number, organizationId: number) => {
+  await prisma.cartItem.deleteMany({
+    where: {
+      cart: {
+        studentId,
+        organizationId,
+      },
+    },
+  });
+  revalidatePath('/shop/cart');
 };

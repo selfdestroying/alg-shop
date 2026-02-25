@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 
 type JWTPayload = {
   studentId: number | string;
+  organizationId: number | string;
   expiresAt: Date;
 };
 
@@ -31,9 +32,12 @@ export async function decrypt(session: string | undefined = '') {
   }
 }
 
-export async function createSession(studentId: number | string) {
+export async function createSession(
+  studentId: number | string,
+  organizationId: number | string,
+) {
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-  const session = await encrypt({ studentId, expiresAt });
+  const session = await encrypt({ studentId, organizationId, expiresAt });
 
   (await cookies()).set('student_session', session, {
     httpOnly: true,
@@ -50,11 +54,15 @@ export async function verifySession() {
   const cookie = (await cookies()).get('student_session')?.value;
   const session = await decrypt(cookie);
 
-  if (!session?.studentId) {
-    return { isAuth: false, studentId: null };
+  if (!session?.studentId || !session?.organizationId) {
+    return { isAuth: false, studentId: null, organizationId: null };
   }
 
-  return { isAuth: true, studentId: Number(session.studentId) };
+  return {
+    isAuth: true,
+    studentId: Number(session.studentId),
+    organizationId: Number(session.organizationId),
+  };
 }
 
 export async function updateSession() {

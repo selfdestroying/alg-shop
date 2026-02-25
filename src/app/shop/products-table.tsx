@@ -20,12 +20,14 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Toggle } from '@/components/ui/toggle';
-import { Category, Prisma, Product } from '@prisma/client';
+import { Category, Prisma } from '@prisma/client';
 import { Coins, Grid3X3, List, Search, ShoppingCart, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-type ProductWithCategory = Product & { category: Category };
+type ProductWithCategory = Prisma.ProductGetPayload<{
+  include: { category: true };
+}>;
 type CartWithItems = Prisma.CartGetPayload<{
   include: { items: { include: { product: true } } };
 }>;

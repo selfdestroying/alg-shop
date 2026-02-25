@@ -72,6 +72,7 @@ export default function CartDisplay({
       cart.items.map((item) => ({
         productId: item.productId,
         studentId: student.id,
+        organizationId: student.organizationId,
       })),
       totalPrice,
     );

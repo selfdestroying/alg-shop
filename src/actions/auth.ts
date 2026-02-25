@@ -29,7 +29,7 @@ export async function sigin(
     return { success: false, message: 'Invalid password' };
   }
 
-  await createSession(student.id);
+  await createSession(student.id, student.organizationId);
   redirect('/shop');
 }
 

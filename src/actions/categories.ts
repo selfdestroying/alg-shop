@@ -1,7 +1,12 @@
 'use server';
 
 import prisma from '@/lib/prisma';
+import { verifySession } from '@/lib/session';
 
 export const getCategories = async () => {
-  return await prisma.category.findMany();
+  const { isAuth, studentId, organizationId } = await verifySession();
+  if (!isAuth || studentId === null || organizationId === null) {
+    return [];
+  }
+  return await prisma.category.findMany({ where: { organizationId } });
 };

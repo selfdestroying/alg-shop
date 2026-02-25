@@ -11,7 +11,10 @@ export default async function Page() {
     <ProductsTable
       cart={cart!}
       products={products}
-      categories={[{ id: -1, name: 'Все' }, ...categories]}
+      categories={[
+        { id: -1, name: 'Все', organizationId: cart?.organizationId ?? -1 },
+        ...(categories ?? []),
+      ]}
     />
   );
 }
